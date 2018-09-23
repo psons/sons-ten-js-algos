@@ -7,13 +7,7 @@
 </h3>
 <div>
     <!-- TODO ADD AN ATTRIBUTE THAT focuses the CURSOR INTO THE TEXTAREA ELEMENT WHEN THE PAGE LOADS -->
-    <textarea 
-        autofocus
-        rows=6 
-        cols=55 
-        id="inputText" 
-        type="text"
-        style="margin-bottom: 15px;"> 
+    <textarea autofocus rows=6 cols=55 id="inputText" type="text" style="margin-bottom: 15px;"> 
     </textarea>
     <button onclick="addPlainMessage()">
         Enter
@@ -21,6 +15,9 @@
 </div>
 
 <script>
+    /*
+            if  an element id='listContainer' exiats, get rodof all the html content in it.
+            */
     function clearNames() {
         var rootDiv = document.getElementById('listContainer');
         if (rootDiv) {
@@ -36,11 +33,14 @@
         initMessages();
     }
 
+    /*
+    Displays an indexed list of the global userNames in listContainer. 
+    */
     function initUsersNames() {
         var rootDiv = document.createElement('div');
         rootDiv.id = 'listContainer';
         var userNamesContainer = document.createElement('div');
-        userNames.forEach( function(userName, index) {
+        userNames.forEach(function(userName, index) {
             var childDiv = document.createElement('div');
             var text = document.createTextNode(index.toString().concat(' .) ').concat(`${userName.firstName} ${userName.lastName}`));
             childDiv.appendChild(text);
@@ -92,7 +92,7 @@
         clearFilteredNames();
         clearUserInput();
     }
-    
+
     //TODO SET THE FLAG TO FALS ONCE YOU UNDERSTAND THE ASSIGNMENT
     const instructionsFlag = true;
     if (instructionsFlag) {
@@ -106,13 +106,12 @@
             3. COMPLETE ALL TODOS
         `);
     }
-    
+
 
     /* TODO ADD ADDITONALY 
        OBJECTS LIKE THE ONES BELOW, MINIMUM OF TEN.  
        EACH MUST CONTAIN A FIRST AND LAST NAME AND HANDLE */
-    const userNames = [
-        {
+    const userNames = [{
             firstName: 'Chandler',
             lastName: 'Gegg',
             handle: '@CGegg'
@@ -136,12 +135,14 @@
 
     const userMessages = [];
 
+
     const debounce = (func, delay) => {
         let inDebounce
         return function() {
             const context = this
-            const args = arguments
+            const args = arguments; // pgstodo - arguments isn't defined anywhere.
             clearTimeout(inDebounce)
+            console.log("in the debounce timing decorator with delay set to:", delay)
             inDebounce = setTimeout(() => func.apply(context, args), delay)
         }
     }
@@ -149,23 +150,24 @@
     function initConstantTimeNameFileter() {
         /* EXTRA CREDIT */
     }
+
     function constantTimeNameFilter(userText) {
         /* EXTRA CREDIT :: CONVERT filterNames FUNCTION TO DO CONSTANT TIME LOOK UP.  
         THIS WILL REQUIRE initConstantTimeNameFileter ON PAGE LOAD AS WELL */
     }
 
     function filterNames(userText) {
-        const firstThreeChars = userText.toLowerCase().slice(1,4);
+        const firstThreeChars = userText.toLowerCase().slice(1, 4);
         var re = new RegExp(firstThreeChars, 'g');
         console.log(`First three characters: ${firstThreeChars} `);
         console.log(`First three characters: ${firstThreeChars} `);
         const filteredNames = [];
-        userNames.forEach( (userName) => {
+        userNames.forEach((userName) => {
             const fullname = `${userName.firstName.toLowerCase()} ${userName.lastName.toLowerCase()}`;
             var isMatch = !!userName.firstName.toLowerCase().match(re) || !!userName.lastName.toLowerCase().match(re);
-            console.log(`Fullname: ${fullname}` );
+            console.log(`Fullname: ${fullname}`);
             console.log(isMatch);
-            console.log(`Fullname: ${fullname}` );
+            console.log(`Fullname: ${fullname}`);
             if (isMatch) {
                 filteredNames.push(userName);
             }
@@ -178,7 +180,7 @@
         var rootDiv = document.createElement('div');
         rootDiv.id = 'filteredNamesContainer';
         var namesContainer = document.createElement('div');
-        filteredNames.forEach( (name) => {
+        filteredNames.forEach((name) => {
             var nameElm = document.createElement('button');
             nameElm.style['background-color'] = 'dodgerblue';
             nameElm.style['cursor'] = 'pointer';
@@ -186,7 +188,7 @@
             var text = document.createTextNode(`${name.firstName} ${name.lastName}`);
             nameElm.appendChild(text);
             namesContainer.appendChild(nameElm);
-            
+
             /* 
                 TODO :: ADD CLICK EVENT LISTENER [addEventListener] TO EACH NAME ELEMENT.
                 IF THE USER CLICKS ON A FILTERED NAME THEN THEN A MESSAGE IS OUTPUT
@@ -218,16 +220,19 @@
 
     function clearFilteredNames() {
         const filteredNames = document.getElementsByClassName('filtered-name');
-        Array.from(filteredNames).forEach( (filteredName) => {
+        Array.from(filteredNames).forEach((filteredName) => {
             filteredName.remove();
-        });        
-        
+        });
+
     }
 
     function getUserText() {
         return document.getElementById('inputText').value.trim();
     }
 
+    /*
+    Call back for 'input' into the id=inputText text area.
+    */
     function searchNames() {
         const userText = getUserText();
         console.log('Search names ...');
@@ -243,18 +248,29 @@
             console.log('MISSING @ IN USER TEXT');
         }
     }
+
     // TODO UPDATE THE DEBOUNCE DELAY TO MORE CLOSELY RESEMBLE USER TYPING
+    /*
+    Is called when the doc Dom parsed and loded, but not all style and images are loaded.
+     - 'DOMContentLoaded' event
+    Sets and event listener on
+     - 'inputText' textarea
+    The event that is registered is 'input'
+    the callback is searchNames.
+    
+    This ends up in effect being the "main()" of this script.
+    */
     document.addEventListener("DOMContentLoaded", function(event) {
         document.getElementById('inputText').addEventListener(
             'input',
             debounce(
                 searchNames,
-                20000
+                4000 // was 20000
             )
         );
         initDocument();
     });
-    
+
 </script>
 
 <style>
@@ -263,4 +279,5 @@
         height: 23px;
         line-height: 18px;
     }
+
 </style>
