@@ -7,6 +7,7 @@
 </h3>
 <div>
     <!-- TODO ADD AN ATTRIBUTE THAT focuses the CURSOR INTO THE TEXTAREA ELEMENT WHEN THE PAGE LOADS -->
+    <!-- autofocus does this, and was provided in the starter file</-->
     <textarea autofocus rows=6 cols=55 id="inputText" type="text" style="margin-bottom: 15px;"> 
     </textarea>
     <button onclick="addPlainMessage()">
@@ -15,9 +16,23 @@
 </div>
 
 <script>
-    /*
-            if  an element id='listContainer' exiats, get rodof all the html content in it.
-            */
+    //    The event flows that cause the browser to do stuff coded in this script:
+    //    1) documet is loaded and initialized.DOMContentLoaded event -
+    //        puts more stuff in the doc in initDocument() -
+    //        registers a timout in debounce()
+    //    2) onTimout
+    //        searchNames() gets called to see if @ has been used to identify a recipient. -
+    //        does some things to re - render id = 'messagesContainer'
+    //    3) onClick button with content: EnteraddPlainMessage() gets called.moves content of id = 'inputText'
+    //    to id = 'messagesContainer' -
+    //        does some things to re - render id = 'messagesContainer'
+    //    4) onClick button with content: Clear Messages -
+    //        clearMessages() gets called to clear the content of id = 'messagesContainer'
+    //    5) click button matching a user from filterNames.
+
+
+    /* Clear all elements out of the the propmt list of names id='listContainer' if it exists.
+     */
     function clearNames() {
         var rootDiv = document.getElementById('listContainer');
         if (rootDiv) {
@@ -34,7 +49,7 @@
     }
 
     /*
-    Displays an indexed list of the global userNames in listContainer. 
+    Displays an indexed list of the global userNames in id=listContainer. 
     */
     function initUsersNames() {
         var rootDiv = document.createElement('div');
@@ -50,6 +65,9 @@
         document.body.appendChild(rootDiv);
     }
 
+    /*
+    creates a div id='messagesContainer' with float left in the body.
+    */
     function initMessages() {
         var rootDiv = document.createElement('div');
         var messagesContainer = document.createElement('div');
@@ -59,10 +77,25 @@
     }
 
     function clearMessages() {
-        /*TODO CLEAR MESSAGES FROM DOCUMENT WHEN USER CLICKS THE [CLEAR MESSAGES] BUTTON */
+        /*done, but should I clear the handle buttons too? TODO CLEAR MESSAGES FROM DOCUMENT WHEN USER CLICKS THE [CLEAR MESSAGES] BUTTON */
         /* EXTRA CREDIT INCLUDE A SCRIPT TAG THATS FETCHES BOOTSTRAP CSS STLYINGS AND STYLE THE BUTTONS */
+        clearById('messagesContainer');
     }
 
+
+    function clearById(anId) {
+        "removes any elements in the element with id=anId"
+        let letElement = document.getElementById(anId);
+        if (letElement) {
+            while (letElement.hasChildNodes()) {
+                letElement.removeChild(letElement.lastChild)
+            }
+        }
+    }
+
+    /*
+    This is the event handler of the provided button w content: Enter
+    */
     function addPlainMessage() {
         const userText = getUserText();
         var messagesContainer = document.getElementById('messagesContainer');
@@ -73,7 +106,8 @@
         clearUserInput();
     }
 
-    function addHandleMessage(handle) {
+
+    function addHandleMessage(handle, message) {
         var messagesContainer = document.getElementById('messagesContainer');
         var messageDiv = document.createElement('p');
         var handleSpan = document.createElement('span');
@@ -84,6 +118,8 @@
         //        WITH ANY ADDITIONAL USER TEXT FROM THE ORIGIN USER TEXT MESSAGE
         var dummyText = 'TODO:: EXCLUDING THE ORIGINALLY TYPED USER NAME REPLACE THIS TEXT \
                          WITH ANY ADDITIONAL USER TEXT FROM THE ORIGIN USER TEXT MESSAGE';
+        var nameSquashRegex = /@.*? /
+        dummyText = message.replace(nameSquashRegex, ' ');
         var messageText = document.createTextNode(`${dummyText} `);
         messageDiv.appendChild(handleSpan);
         messageDiv.appendChild(messageText);
@@ -93,8 +129,8 @@
         clearUserInput();
     }
 
-    //TODO SET THE FLAG TO FALS ONCE YOU UNDERSTAND THE ASSIGNMENT
-    const instructionsFlag = true;
+    //done TODO SET THE FLAG TO FALSE ONCE YOU UNDERSTAND THE ASSIGNMENT
+    const instructionsFlag = false;
     if (instructionsFlag) {
         console.log(`README`);
         console.log(`
@@ -102,16 +138,22 @@
             1. INSTALL LODASH USING NPM AND SAVE THE DEPENDENCY TO YOUR PACKAGE.JSON FILE
     
             2. IMPORT LODASH INTO THE INDEX.JS FILE.
+                npm install lodash took care of this.
+                    it put 635 file adding up to about 5MB in node_modules/lodash/
+                the single minified .js file imported in a script tag at the top by contrast is 28k 
     
             3. COMPLETE ALL TODOS
         `);
     }
 
-
-    /* TODO ADD ADDITONALY 
+    /* done TODO ADD ADDITONAL 
        OBJECTS LIKE THE ONES BELOW, MINIMUM OF TEN.  
        EACH MUST CONTAIN A FIRST AND LAST NAME AND HANDLE */
     const userNames = [{
+            firstName: 'Test',
+            lastName: 'Dude',
+            handle: '@td'
+        }, {
             firstName: 'Chandler',
             lastName: 'Gegg',
             handle: '@CGegg'
@@ -130,25 +172,84 @@
             firstName: 'Horace',
             lastName: 'Grant',
             handle: '@HGrant'
-        }
+        },
+        {
+            firstName: 'Buddy ',
+            lastName: 'Guy',
+            handle: '@BGuy'
+        },
+        {
+            firstName: 'JohnLee',
+            lastName: 'Hooker',
+            handle: '@JHooker'
+        },
+        {
+            firstName: 'Johnny',
+            lastName: 'Moore',
+            handle: '@JMoore'
+        },
+        {
+            firstName: 'Koko',
+            lastName: 'Taylor',
+            handle: '@KTaylor'
+        },
+        {
+            firstName: 'Lonnie',
+            lastName: 'Brooks',
+            handle: '@LBrooks'
+        },
+        {
+            firstName: 'Muddy',
+            lastName: 'Waters',
+            handle: '@MWaters'
+        },
+        {
+            firstName: 'Rory',
+            lastName: 'Galagher',
+            handle: '@RGalagher'
+        },
+        {
+            firstName: 'Son',
+            lastName: 'Seals',
+            handle: '@SSeals'
+        },
+        {
+            firstName: 'Sonny',
+            lastName: 'Landruth',
+            handle: '@SLandruth'
+        },
+        {
+            firstName: 'John',
+            lastName: 'Hiatt',
+            handle: '@JHiatt'
+        },
+        {
+            firstName: 'Bo',
+            lastName: 'Diddley',
+            handle: '@BDiddley'
+        },
+        {
+            firstName: 'Albert',
+            lastName: 'King',
+            handle: '@AKing'
+        },
     ];
 
     const userMessages = [];
 
-
     const debounce = (func, delay) => {
         let inDebounce
         return function() {
-            const context = this
+            const context = this;
             const args = arguments; // pgstodo - arguments isn't defined anywhere.
-            clearTimeout(inDebounce)
+            clearTimeout(inDebounce);
             console.log("in the debounce timing decorator with delay set to:", delay)
             inDebounce = setTimeout(() => func.apply(context, args), delay)
         }
     }
 
     function initConstantTimeNameFileter() {
-        /* EXTRA CREDIT */
+        /* TODO EXTRA CREDIT */
     }
 
     function constantTimeNameFilter(userText) {
@@ -175,18 +276,24 @@
         return filteredNames;
     }
 
-    function initFilteredNames(filteredNames) {
+    function initFilteredNames(filteredNames, theUserText) {
+        // Puts buttons in id=filteredNamesContainer' for each name in the list.
         clearNames();
         var rootDiv = document.createElement('div');
         rootDiv.id = 'filteredNamesContainer';
         var namesContainer = document.createElement('div');
-        filteredNames.forEach((name) => {
+        filteredNames.forEach((nameRecord) => {
             var nameElm = document.createElement('button');
             nameElm.style['background-color'] = 'dodgerblue';
             nameElm.style['cursor'] = 'pointer';
             nameElm.setAttribute('class', 'filtered-name');
-            var text = document.createTextNode(`${name.firstName} ${name.lastName}`);
+            nameElm.setAttribute('data-handle', nameRecord.handle);
+            var text = document.createTextNode(`${nameRecord.firstName} ${nameRecord.lastName}`);
             nameElm.appendChild(text);
+            //            nameElm.addEventListener('click', handleButtonClick)
+            nameElm.addEventListener('click', function(event) {
+                addHandleMessage(nameRecord.handle, theUserText)
+            });
             namesContainer.appendChild(nameElm);
 
             /* 
@@ -208,11 +315,16 @@
 
             //TODO WRAP THIS FUNCTION WITH EVENT LISTENER AND UNCOMMENT IT
             //TODO REPLACE [myHandle] WITH THE USERS CORRECT HANDLE
-            // addHandleMessage('myHandle'); 
+            //addHandleMessage('myHandle');
 
         });
         document.body.appendChild(namesContainer);
     }
+
+    //    function handleButtonClick(event) {
+    //        console.log("handleButtonClick", event.target)
+    //        let letHandle = event.target.getAttribute('data-handle')
+    //    }
 
     function clearUserInput() {
         document.getElementById('inputText').value = '';
@@ -226,14 +338,17 @@
 
     }
 
+    // called from 
     function getUserText() {
         return document.getElementById('inputText').value.trim();
     }
 
     /*
-    Call back for 'input' into the id=inputText text area.
+    Call back for 'input' event into the id=inputText text area, subject to a delay .
+    calls filterNames to get matches then sends them to initFilteredNames.
     */
     function searchNames() {
+
         const userText = getUserText();
         console.log('Search names ...');
         console.log(userText);
@@ -243,7 +358,7 @@
         if (firstChar === '@') {
             console.log('filter names ...');
             const filteredNames = filterNames(userText);
-            initFilteredNames(filteredNames);
+            initFilteredNames(filteredNames, userText);
         } else {
             console.log('MISSING @ IN USER TEXT');
         }
@@ -261,11 +376,12 @@
     This ends up in effect being the "main()" of this script.
     */
     document.addEventListener("DOMContentLoaded", function(event) {
+        console.log("DOMContentLoaded")
         document.getElementById('inputText').addEventListener(
             'input',
             debounce(
                 searchNames,
-                4000 // was 20000
+                1800 // was 20000
             )
         );
         initDocument();
